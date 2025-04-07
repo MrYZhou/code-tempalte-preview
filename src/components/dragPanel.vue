@@ -1,11 +1,7 @@
 <template>
   <!-- 抽屉面板 -->
-  <config
-    ref="configPanel"
-    @startDo="startDo"
-    @previewPanel="previewPanel"
-  ></config>
-  <jsonDrawer ref="jsondrawer" @valueRefresh="parse"></jsonDrawer>
+  <config ref="configPanel" @startDo="startDo"></config>
+  <jsonDrawer ref="jsondrawer" @valueRefresh="doParse"></jsonDrawer>
   <!-- 主布局 -->
   <div class="larry">
     <div class="btn-group">
@@ -59,11 +55,6 @@ const loadConfig = () => {
   let config = JSON.parse(configData)
   if (configData) {
     store.saveConfig(config)
-  }
-
-  // 只有原始页面才能够打开预览页面
-  if (config?.splitPanel && window.name !== "preview") {
-    previewPanel()
   }
 }
 

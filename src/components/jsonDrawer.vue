@@ -7,7 +7,7 @@
       <el-form :model="postData" label-width="64px" :label-position="'left'">
         <el-button @click="addKey">添加</el-button>
         <el-form-item label="header" class="mt10">
-          <el-row v-for="(item) in postData.header" :key="item.key" :gutter="10">
+          <el-row v-for="item in postData.header" :key="item.key" :gutter="10">
             <el-col :span="6">
               <el-input v-model="item.key" placeholder="请输入key"></el-input>
             </el-col>
@@ -19,7 +19,10 @@
             </el-col>
           </el-row>
         </el-form-item>
-        <json style="width: 100%; height: 100vh" v-model:value="postData.content"></json>
+        <json
+          style="width: 100%; height: 100vh"
+          v-model:value="postData.content"
+        ></json>
       </el-form>
     </template>
     <template #footer>
@@ -32,53 +35,52 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
-import {ElMessageBox} from "element-plus";
-import {useMainStore} from "@/store";
-import {Delete} from "@element-plus/icons-vue";
+import { ref } from "vue"
+import { ElMessageBox } from "element-plus"
+import { useMainStore } from "@/store"
+import { Delete } from "@element-plus/icons-vue"
 
-const store = useMainStore();
+const store = useMainStore()
 let postData = reactive({
   content: "",
-  header: [{key: "", value: ""}],
-});
+  header: [{ key: "", value: "" }],
+})
 const addKey = () => {
-  postData.header.push({key: "", value: ""});
-};
+  postData.header.push({ key: "", value: "" })
+}
 const removeKey = (index) => {
-  postData.header.splice(index, 1);
-};
-const drawer = ref(false);
-const direction = ref("ltr");
+  postData.header.splice(index, 1)
+}
+const drawer = ref(false)
+const direction = ref("ltr")
 defineExpose({
   drawer,
-});
+})
 
 function cancelClick() {
-  drawer.value = false;
+  drawer.value = false
 }
 
 const loadConfig = () => {
-  let configData = localStorage.getItem("design-config");
+  let configData = localStorage.getItem("design-config")
   if (configData) {
     let data = JSON.parse(configData)
     postData = reactive({
-
       content: data.content,
       header: data.header ?? [],
-    });
+    })
   }
-};
+}
 onMounted(() => {
-  loadConfig();
+  loadConfig()
   addKey()
-});
-const emit = defineEmits(["valueRefresh"]);
+})
+const emit = defineEmits(["valueRefresh"])
 
 function confirmClick() {
-  store.configData(postData);
-  emit("valueRefresh", "");
-  drawer.value = false;
+  store.configData(postData)
+  emit("valueRefresh", "")
+  drawer.value = false
 }
 </script>
 <style scope>

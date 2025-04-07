@@ -4,8 +4,7 @@ export const useMainStore = defineStore('main', {
     state: () => ({
         tableInfo: [],
         config: {
-            parseType: 1,   // 建议改为驼峰命名 parseType
-            renderData: null,  // 添加初始定义避免 undefined
+            renderData: null,
             header: []
         }
     }),

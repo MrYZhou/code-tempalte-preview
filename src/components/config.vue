@@ -18,22 +18,18 @@
               <el-radio label="2" size="large">web</el-radio>
             </el-radio-group>
           </el-form-item> -->
-          <el-form-item label="解析模式">
-            <el-radio-group v-model="config.parseType" class="ml-4">
-              <el-radio label="4" :disabled="config.splitPanel" size="large">只预览</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="服务地址" v-if="config.parseType === '4'">
-            <el-input v-model="config.apiCustom" placeholder="请输入"></el-input>
-          </el-form-item>
-          <el-form-item label="数据映射" v-if="config.parseType === '4'">
-            <el-input v-model="config.datakey" placeholder="请输入"></el-input>
-          </el-form-item>
-          <el-form-item label="隔离面板">
-            <el-switch v-model="config.splitPanel" active-text="开" inactive-text="关" />
+          <el-form-item label="服务地址">
+            <el-input
+              v-model="config.apiCustom"
+              placeholder="请输入"
+            ></el-input>
           </el-form-item>
           <el-form-item label="定时请求">
-            <el-switch v-model="config.timeOpen" active-text="开" inactive-text="关" />
+            <el-switch
+              v-model="config.timeOpen"
+              active-text="开"
+              inactive-text="关"
+            />
           </el-form-item>
 
           <el-form-item label="间隔" v-if="config.timeOpen">
@@ -58,72 +54,52 @@
 </template>
 
 <script setup>
-import { ElMessageBox } from "element-plus";
-import { useMainStore } from "@/store";
+import { ElMessageBox } from "element-plus"
+import { useMainStore } from "@/store"
 
-const store = useMainStore();
-const drawer = ref(false);
+const store = useMainStore()
+const drawer = ref(false)
 defineExpose({
   drawer,
-});
-const direction = ref("rtl");
+})
+const direction = ref("rtl")
 
 let config = reactive({
   api: "http://localhost:8088",
-  apiCustom:"http://localhost:8000",
-  parseType: "1",
+  apiCustom: "http://localhost:8000",
   time: 1,
-  datakey: "",
-  engine:"velocity",
   templateDir: "",
-  splitPanel: false,
   hasOne: false,
   timeOpen: false,
   vueType: "1",
   codeForm: "1",
   output: "",
-  datbaseInfo: {
-    host: "127.0.0.1",
-    name: "study", // 数据库
-    port: "3306",
-    user: "root",
-    password: "123456",
-    prefix: {
-      table: "la_",
-      field: "f_",
-    },
-  },
-});
+})
 const loadConfig = () => {
-  let configData = localStorage.getItem("design-config");
+  let configData = localStorage.getItem("design-config")
   if (configData) {
-    config = reactive({ ...JSON.parse(configData) });
+    config = reactive({ ...JSON.parse(configData) })
   }
-};
+}
 onMounted(() => {
-  loadConfig();
-});
-const emit = defineEmits(["startDo","previewPanel"]);
+  loadConfig()
+})
+const emit = defineEmits(["startDo"])
 function cancelClick() {
-  drawer.value = false;
+  drawer.value = false
 }
 function confirmClick() {
-  if(config.splitPanel && config.parseType == '4'){
-    config.parseType = '1'
-  }
   // 存pinia
-  store.saveConfig(config);
+  store.saveConfig(config)
   // 存localStorage
-  localStorage.setItem("design-config", JSON.stringify(config));
-  if(config.splitPanel){
-    emit("previewPanel");
-  }
-  emit("startDo");
-  cancelClick();
+  localStorage.setItem("design-config", JSON.stringify(config))
+
+  emit("startDo")
+  cancelClick()
 }
 </script>
 <style scoped>
-.el-select{
+.el-select {
   width: 100%;
 }
 </style>
