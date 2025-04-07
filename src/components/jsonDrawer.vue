@@ -95,7 +95,7 @@ function cancelClick() {
 }
 
 const loadConfig = () => {
-  let configData = localStorage.getItem("design-config")
+  let configData = sessionStorage.getItem("design-config")
   if (configData) {
     let data = JSON.parse(configData)
     postData = reactive({

@@ -50,7 +50,7 @@ let rightcom = ref()
 
 const loadConfig = () => {
   // 读取缓存数据初始化到pinia
-  let configData = localStorage.getItem("design-config")
+  let configData = sessionStorage.getItem("design-config")
   console.log(configData, 3423)
   let config = JSON.parse(configData)
   if (configData) {
