@@ -19,20 +19,19 @@
       </div>
     </div>
     <div class="group group-form" :style="'width: 100%;'">
-      <rightCom ref="rightcom" v-model:value="data.value2"></rightCom>
+      <rightCom ref="rightcom" v-model:value="previewData.content"></rightCom>
     </div>
   </div>
 </template>
 <script setup>
-import rightCom from "./rightCom/index.vue"
+import rightCom from "./rightCom/index2.vue"
 import { View, Tools, Download, Document, Dish } from "@element-plus/icons-vue"
 import { useMainStore } from "@/store"
 import { ElMessageBox } from "element-plus"
 
 const store = useMainStore()
-let data = reactive({ value2: "" })
+let previewData = reactive({ content: 'console.log("Code Preview")' })
 let timer = ref("")
-
 const startDo = () => {
   let config = store.config
   clearInterval(timer)
@@ -45,8 +44,6 @@ const startDo = () => {
 onUnmounted(() => {
   clearInterval(timer)
 })
-
-let rightcom = ref()
 
 const loadConfig = () => {
   // 读取缓存数据初始化到pinia
@@ -82,15 +79,13 @@ const doParse = async () => {
   console.log(config.renderData, 312312)
   console.log(JSON.parse(config.renderData))
   let query = {
-    type: config.engine,
-    content: data.value1,
     params: JSON.parse(config.renderData),
   }
   let res = await axios.post(`http://127.0.0.1:8088/render`, query)
   // todo 增加自定义的函数处理返回的信息
   let value = res.data
   if (typeof value === "string") {
-    data.value2 = value
+    previewData.content = value
   }
 }
 </script>
