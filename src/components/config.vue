@@ -67,10 +67,9 @@ const direction = ref("rtl")
 let config = reactive({
   api: "http://localhost:8088",
   apiCustom: "http://localhost:8000",
-  time: 1,
   templateDir: "",
-  hasOne: false,
-  timeOpen: false,
+  timeOpen: true, // 定时请求
+  time: 5, // 每多少秒请求一次
   vueType: "1",
   codeForm: "1",
   output: "",
