@@ -19,12 +19,12 @@
       </div>
     </div>
     <div class="group group-form" :style="'width: 100%;'">
-      <rightCom ref="rightcom" v-model:value="previewData.content"></rightCom>
+      <monacoEditor v-model:value="previewData.content"></monacoEditor>
     </div>
   </div>
 </template>
 <script setup>
-import rightCom from "./rightCom/index2.vue"
+import monacoEditor from "./monacoEditor.vue"
 import { View, Tools, Download, Document, Dish } from "@element-plus/icons-vue"
 import { useMainStore } from "@/store"
 import { ElMessageBox } from "element-plus"

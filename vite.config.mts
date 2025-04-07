@@ -3,7 +3,6 @@ import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import viteCompression from 'vite-plugin-compression'
-import monacoEditorEsmPlugin from 'vite-plugin-monaco-editor-esm'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 
@@ -38,7 +37,6 @@ export default defineConfig({
             algorithm: 'gzip',
             ext: '.gz',
         }),
-        monacoEditorEsmPlugin(),
         AutoImport({
             dts: './src/auto-imports.d.ts',
             imports: ['vue', 'pinia', 'vue-router', '@vueuse/core'],
