@@ -60,8 +60,7 @@ onMounted(() => {
 
   loadConfig()
 })
-const axios = inject("axios") // inject axios
-
+const lar = inject("http")
 // 显示控制面板
 const configPanel = ref()
 const doConfig = () => {
@@ -75,13 +74,7 @@ const jsonData = () => {
 }
 
 const doParse = async () => {
-  let config = store.config
-  console.log(config.renderData, 312312)
-  console.log(JSON.parse(config.renderData))
-  let query = {
-    params: JSON.parse(config.renderData),
-  }
-  let res = await axios.post(`http://127.0.0.1:8088/render`, query)
+  let res = await lar.post(`/render`)
   // todo 增加自定义的函数处理返回的信息
   let value = res.data
   if (typeof value === "string") {

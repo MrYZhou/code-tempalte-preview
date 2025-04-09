@@ -38,7 +38,7 @@ export default defineConfig({
             ext: '.gz',
         }),
         AutoImport({
-            dts: './src/auto-imports.d.ts',
+            dts: './build/auto-imports.d.ts',
             imports: ['vue', 'pinia', 'vue-router', '@vueuse/core'],
             resolvers: [ElementPlusResolver()],
             eslintrc: {
@@ -48,7 +48,7 @@ export default defineConfig({
             },
         }),
         Components({
-            dts: './src/components.d.ts',
+            dts: './build/components.d.ts',
             // imports 指定组件所在位置，默认为 src/components
             dirs: ['src/components/'],
             resolvers: [ElementPlusResolver()],
