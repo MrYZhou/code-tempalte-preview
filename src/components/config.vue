@@ -10,8 +10,7 @@
             <el-form-item label="服务地址">
               <el-input
                 v-model="config.apiCustom"
-                placeholder="请输入"
-              ></el-input>
+                placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="22">
@@ -19,8 +18,7 @@
               <el-switch
                 v-model="config.timeOpen"
                 active-text="开"
-                inactive-text="关"
-              />
+                inactive-text="关" />
             </el-form-item>
           </el-col>
           <el-col :span="22">
@@ -30,8 +28,7 @@
                 :step="1"
                 :min="1"
                 v-model="config.time"
-                placeholder="请输入秒数"
-              ></el-input-number>
+                placeholder="请输入秒数"></el-input-number>
             </el-form-item>
           </el-col>
         </el-row>
@@ -60,12 +57,20 @@ const direction = ref("rtl")
 let config = reactive({
   apiCustom: "http://localhost:8000", // 自己预览服务的地址
   timeOpen: true, // 定时请求
-  time: 5, // 每多少秒请求一次
+  time: 1, // 每多少秒请求一次
 })
+const doSaveConfig = () => {
+  // 存pinia
+  store.saveConfig(config)
+  // 存localStorage
+  sessionStorage.setItem("design-config", JSON.stringify(config))
+}
 const loadConfig = () => {
   let configData = sessionStorage.getItem("design-config")
   if (configData) {
     config = reactive({ ...JSON.parse(configData) })
+  } else {
+    doSaveConfig()
   }
 }
 onMounted(() => {
@@ -76,11 +81,6 @@ function cancelClick() {
   drawer.value = false
 }
 function confirmClick() {
-  // 存pinia
-  store.saveConfig(config)
-  // 存localStorage
-  sessionStorage.setItem("design-config", JSON.stringify(config))
-
   emit("startDo")
   cancelClick()
 }

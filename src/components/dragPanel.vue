@@ -48,17 +48,14 @@ onUnmounted(() => {
 const loadConfig = () => {
   // 读取缓存数据初始化到pinia
   let configData = sessionStorage.getItem("design-config")
-  console.log(configData, 3423)
-  let config = JSON.parse(configData)
-  if (configData) {
-    store.saveConfig(config)
-  }
+  let config = configData ? JSON.parse(configData) : {}
+
+  store.saveConfig(config)
 }
 
 onMounted(() => {
-  startDo()
-
   loadConfig()
+  startDo()
 })
 const lar = inject("http")
 // 显示控制面板
@@ -76,10 +73,8 @@ const jsonData = () => {
 const doParse = async () => {
   let res = await lar.post(`/render`)
   // todo 增加自定义的函数处理返回的信息
-  let value = res.data
-  if (typeof value === "string") {
-    previewData.content = value
-  }
+  let value = res
+  previewData.content = value
 }
 </script>
 <style>

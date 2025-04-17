@@ -17,7 +17,6 @@ instance.interceptors.request.use(config => {
 )
 // 响应拦截器配置
 instance.interceptors.response.use(response => {
-    console.log(response)
     return response.data
 }, error => {
     switch (error.response.status) {
