@@ -8,8 +8,7 @@
         <el-button @click="addKey">添加header</el-button>
         <el-form-item
           class="mt10"
-          v-if="postData.header && postData.header.length"
-        >
+          v-if="postData.header && postData.header.length">
           <el-row v-for="item in postData.header" :key="item.key" :gutter="10">
             <el-col :span="6">
               <el-input v-model="item.key" placeholder="请输入key"></el-input>
@@ -21,8 +20,7 @@
               <el-button
                 @click="removeKey"
                 :icon="Delete"
-                type="danger"
-              ></el-button>
+                type="danger"></el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -30,8 +28,7 @@
         <el-button @click="addBodyKey">添加body</el-button>
         <el-form-item
           class="mt10"
-          v-if="postData.content && postData.content.length"
-        >
+          v-if="postData.content && postData.content.length">
           <el-row v-for="item in postData.content" :key="item.key" :gutter="10">
             <el-col :span="6">
               <el-input v-model="item.key" placeholder="请输入key"></el-input>
@@ -43,8 +40,7 @@
               <el-button
                 @click="removeBodyKey"
                 :icon="Delete"
-                type="danger"
-              ></el-button>
+                type="danger"></el-button>
             </el-col>
           </el-row>
         </el-form-item>
