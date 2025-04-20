@@ -1,5 +1,5 @@
 <template>
-  <el-drawer v-model="drawer" :direction="direction">
+  <el-drawer v-model="drawer" :direction="direction" style="min-width: 500px">
     <template #header>
       <h4>配置面板</h4>
     </template>
@@ -33,6 +33,30 @@
           </el-col>
         </el-row>
       </el-form>
+      <el-row
+        ><el-button @click="addRenderName">添加解析规则</el-button>
+      </el-row>
+      <el-row
+        v-for="(item, index) in config.renderRules"
+        :key="item.key"
+        :gutter="8"
+        style="margin-top: 10px;">
+        <el-col :span="2" style="margin:auto">组{{ index + 1 }}</el-col>
+        <el-col :span="6">
+          <el-input v-model="item.key" placeholder="请输入标题"></el-input>
+        </el-col>
+        <el-col :span="12">
+          <el-input
+            v-model="item.value"
+            placeholder="请输入解析规则"></el-input>
+        </el-col>
+        <el-col :span="4">
+          <el-button
+            @click="removeKey"
+            :icon="Delete"
+            type="danger"></el-button>
+        </el-col>
+      </el-row>
     </template>
     <template #footer>
       <div style="flex: auto">
@@ -44,45 +68,56 @@
 </template>
 
 <script setup>
-import { ElMessageBox } from "element-plus"
-import { useMainStore } from "@/store"
+  import { ElMessageBox } from "element-plus"
+  import { useMainStore } from "@/store"
+  import { Delete } from "@element-plus/icons-vue"
 
-const store = useMainStore()
-const drawer = ref(false)
-defineExpose({
-  drawer,
-})
-const direction = ref("rtl")
+  const store = useMainStore()
+  const drawer = ref(false)
+  defineExpose({
+    drawer,
+  })
+  const direction = ref("rtl")
 
-let config = reactive({
-  apiCustom: "http://localhost:8000", // 自己预览服务的地址
-  timeOpen: true, // 定时请求
-  time: 1, // 每多少秒请求一次
-})
-const doSaveConfig = () => {
-  // 存pinia
-  store.saveConfig(config)
-  // 存localStorage
-  sessionStorage.setItem("design-config", JSON.stringify(config))
-}
-const loadConfig = () => {
-  let configData = sessionStorage.getItem("design-config")
-  if (configData) {
-    config = reactive({ ...JSON.parse(configData) })
-  } else {
-    doSaveConfig()
+  let config = reactive({
+    apiCustom: "http://localhost:8000", // 自己预览服务的地址
+    timeOpen: true, // 定时请求
+    time: 1, // 每多少秒请求一次
+    renderRules: [],
+  })
+  const addRenderName = () => {
+    console.log(config.renderRules, 223)
+    config.renderRules.push({ key: "", value: "" })
   }
-}
-onMounted(() => {
-  loadConfig()
-})
-const emit = defineEmits(["startDo"])
-function cancelClick() {
-  drawer.value = false
-}
-function confirmClick() {
-  emit("startDo")
-  cancelClick()
-}
+  const removeKey = (index) => {
+    config.renderRules.splice(index, 1)
+  }
+
+  const doSaveConfig = () => {
+    // 存pinia
+    store.saveConfig(config)
+    // 存localStorage
+    sessionStorage.setItem("design-config", JSON.stringify(config))
+  }
+  const loadConfig = () => {
+    let configData = sessionStorage.getItem("design-config")
+    if (configData) {
+      config = reactive({ ...JSON.parse(configData) })
+    } else {
+      doSaveConfig()
+    }
+  }
+  onMounted(() => {
+    loadConfig()
+  })
+  const emit = defineEmits(["startDo"])
+  function cancelClick() {
+    drawer.value = false
+  }
+  function confirmClick() {
+    emit("startDo")
+    doSaveConfig()
+    cancelClick()
+  }
 </script>
 <style scoped></style>

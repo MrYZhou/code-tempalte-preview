@@ -4,6 +4,10 @@
   <jsonDrawer ref="jsondrawer" @valueRefresh="doParse"></jsonDrawer>
   <!-- 主布局 -->
   <div class="larry">
+    <div class="group group-form" :style="'width: 100%;'">
+      <monacoEditor v-model:value="state.content"></monacoEditor>
+    </div>
+
     <div class="btn-group">
       <!-- 配置面板 -->
       <div>
@@ -18,9 +22,6 @@
         <el-button @click="jsonData" :icon="Dish"></el-button>
       </div>
     </div>
-    <div class="group group-form" :style="'width: 100%;'">
-      <monacoEditor v-model:value="previewData.content"></monacoEditor>
-    </div>
   </div>
 </template>
 <script setup>
@@ -28,9 +29,12 @@ import monacoEditor from "./monacoEditor.vue"
 import { View, Tools, Download, Document, Dish } from "@element-plus/icons-vue"
 import { useMainStore } from "@/store"
 import { ElMessageBox } from "element-plus"
-
+import axios from "axios"
 const store = useMainStore()
-let previewData = reactive({ content: 'console.log("Code Preview")' })
+let state = reactive({
+  content: 'console.log("Code Preview")',
+  config: store.config,
+})
 let timer = ref("")
 const startDo = () => {
   let config = store.config
@@ -49,7 +53,6 @@ const loadConfig = () => {
   // 读取缓存数据初始化到pinia
   let configData = sessionStorage.getItem("design-config")
   let config = configData ? JSON.parse(configData) : {}
-
   store.saveConfig(config)
 }
 
@@ -69,12 +72,27 @@ const jsondrawer = ref()
 const jsonData = () => {
   jsondrawer.value.drawer = true
 }
-
+const render = (res, renderKey) => {
+  const func = (res, renderKey) =>
+    renderKey.split(".").reduce((obj, key) => obj?.[key], res)
+  return func(res, renderKey)
+}
 const doParse = async () => {
-  let res = await lar.post(`/render`)
-  // todo 增加自定义的函数处理返回的信息
-  let value = res
-  previewData.content = value
+  let res = await axios.post(state.config.apiCustom)
+  let renderArr = []
+  state.config.renderRules.forEach((item) => {
+    let renderKey = item.value
+    renderArr.push({
+      title: item.key,
+      content: render(res, renderKey),
+    })
+  })
+  // todo如果有选择的标题,则展示选择的标题
+  let value = ""
+  if (renderArr.length) {
+    value = renderArr.length ? renderArr[0].content : ""
+  }
+  state.content = value
 }
 </script>
 <style>

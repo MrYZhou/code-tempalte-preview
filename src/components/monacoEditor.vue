@@ -5,6 +5,8 @@
 import { getCurrentInstance, onMounted, watch } from "vue"
 import * as monaco from "monaco-editor"
 import JsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker"
+import { ElMessage } from "element-plus"
+
 // 解决vite Monaco提示错误
 self.MonacoEnvironment = {
   getWorker() {
@@ -28,7 +30,11 @@ export default {
       () => props.value,
       (value) => {
         // 防止改变编辑器内容时光标重定向
-        if (value !== monacoEditor?.getValue()) {
+        if (value && value !== monacoEditor?.getValue()) {
+          ElMessage({
+            message: "有新的变更",
+            type: "warning",
+          })
           monacoEditor.setValue(value)
         }
       },
