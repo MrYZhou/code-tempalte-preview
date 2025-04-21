@@ -40,17 +40,17 @@
         v-for="(item, index) in config.renderRules"
         :key="item.key"
         :gutter="8"
-        style="margin-top: 10px;">
-        <el-col :span="2" style="margin:auto">组{{ index + 1 }}</el-col>
-        <el-col :span="6">
-          <el-input v-model="item.key" placeholder="请输入标题"></el-input>
+        style="margin-top: 10px">
+        <!-- <el-col :span="2" style="margin:auto">组{{ index + 1 }}</el-col> -->
+        <el-col :span="8">
+          <el-input v-model="item.key" placeholder="请输入显示标题"></el-input>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="8">
           <el-input
             v-model="item.value"
-            placeholder="请输入解析规则"></el-input>
+            placeholder="请输入数据路径"></el-input>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="8">
           <el-button
             @click="removeKey"
             :icon="Delete"
@@ -68,56 +68,56 @@
 </template>
 
 <script setup>
-  import { ElMessageBox } from "element-plus"
-  import { useMainStore } from "@/store"
-  import { Delete } from "@element-plus/icons-vue"
+import { ElMessageBox } from "element-plus"
+import { useMainStore } from "@/store"
+import { Delete } from "@element-plus/icons-vue"
 
-  const store = useMainStore()
-  const drawer = ref(false)
-  defineExpose({
-    drawer,
-  })
-  const direction = ref("rtl")
+const store = useMainStore()
+const drawer = ref(false)
+defineExpose({
+  drawer,
+})
+const direction = ref("rtl")
 
-  let config = reactive({
-    apiCustom: "http://localhost:8000", // 自己预览服务的地址
-    timeOpen: true, // 定时请求
-    time: 1, // 每多少秒请求一次
-    renderRules: [],
-  })
-  const addRenderName = () => {
-    console.log(config.renderRules, 223)
-    config.renderRules.push({ key: "", value: "" })
-  }
-  const removeKey = (index) => {
-    config.renderRules.splice(index, 1)
-  }
+let config = reactive({
+  apiCustom: "http://localhost:8000", // 自己预览服务的地址
+  timeOpen: false, // 定时请求
+  time: 1, // 每多少秒请求一次
+  renderRules: [],
+})
+const addRenderName = () => {
+  console.log(config.renderRules, 223)
+  config.renderRules.push({ key: "", value: "" })
+}
+const removeKey = (index) => {
+  config.renderRules.splice(index, 1)
+}
 
-  const doSaveConfig = () => {
-    // 存pinia
-    store.saveConfig(config)
-    // 存localStorage
-    sessionStorage.setItem("design-config", JSON.stringify(config))
-  }
-  const loadConfig = () => {
-    let configData = sessionStorage.getItem("design-config")
-    if (configData) {
-      config = reactive({ ...JSON.parse(configData) })
-    } else {
-      doSaveConfig()
-    }
-  }
-  onMounted(() => {
-    loadConfig()
-  })
-  const emit = defineEmits(["startDo"])
-  function cancelClick() {
-    drawer.value = false
-  }
-  function confirmClick() {
-    emit("startDo")
+const doSaveConfig = () => {
+  // 存pinia
+  store.saveConfig(config)
+  // 存localStorage
+  sessionStorage.setItem("design-config", JSON.stringify(config))
+}
+const loadConfig = () => {
+  let configData = sessionStorage.getItem("design-config")
+  if (configData) {
+    config = reactive({ ...JSON.parse(configData) })
+  } else {
     doSaveConfig()
-    cancelClick()
   }
+}
+onMounted(() => {
+  loadConfig()
+})
+const emit = defineEmits(["startDo"])
+function cancelClick() {
+  drawer.value = false
+}
+function confirmClick() {
+  emit("startDo")
+  doSaveConfig()
+  cancelClick()
+}
 </script>
 <style scoped></style>
