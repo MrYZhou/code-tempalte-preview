@@ -11,7 +11,7 @@
           v-if="postData.header && postData.header.length">
           <el-row v-for="item in postData.header" :key="item.key" :gutter="10">
             <el-col :span="6">
-              <el-input v-model="item.key" placeholder="请输入key"></el-input>
+              <el-input v-model="item.param" placeholder="请输入key"></el-input>
             </el-col>
             <el-col :span="16">
               <el-input v-model="item.value" placeholder="请输入值"></el-input>
@@ -31,7 +31,7 @@
           v-if="postData.content && postData.content.length">
           <el-row v-for="item in postData.content" :key="item.key" :gutter="10">
             <el-col :span="6">
-              <el-input v-model="item.key" placeholder="请输入key"></el-input>
+              <el-input v-model="item.param" placeholder="请输入key"></el-input>
             </el-col>
             <el-col :span="16">
               <el-input v-model="item.value" placeholder="请输入值"></el-input>
@@ -63,14 +63,14 @@ import { Delete } from "@element-plus/icons-vue"
 
 const store = useMainStore()
 let postData = reactive({
-  content: [{ key: "", value: "" }],
-  header: [{ key: "", value: "" }],
+  content: [{ param: "", value: "" }],
+  header: [{ param: "", value: "" }],
 })
 const addKey = () => {
-  postData.header.push({ key: "", value: "" })
+  postData.header.push({ param: "", value: "" })
 }
 const addBodyKey = () => {
-  postData.content.push({ key: "", value: "" })
+  postData.content.push({ param: "", value: "" })
 }
 
 const removeKey = (index) => {
@@ -91,7 +91,7 @@ function cancelClick() {
 }
 
 const loadConfig = () => {
-  let configData = sessionStorage.getItem("design-config")
+  let configData = localStorage.getItem("design-config")
   if (configData) {
     let data = JSON.parse(configData)
     postData = reactive({

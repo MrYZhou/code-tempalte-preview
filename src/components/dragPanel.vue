@@ -4,6 +4,19 @@
   <jsonDrawer ref="jsondrawer" @valueRefresh="doParse"></jsonDrawer>
   <!-- 主布局 -->
   <div class="larry">
+    <div
+      v-if="state.renderArr && state.renderArr.length > 1"
+      class="group left-navigator">
+      <el-row class="infinite-list">
+        <el-col
+          class="title"
+          :span="24"
+          v-for="(item, index) in state.renderArr"
+          :key="index">
+          {{ item.title }}
+        </el-col>
+      </el-row>
+    </div>
     <div class="group group-form" :style="'width: 100%;'">
       <monacoEditor v-model:value="state.content"></monacoEditor>
     </div>
@@ -32,8 +45,10 @@ import { ElMessageBox } from "element-plus"
 import axios from "axios"
 const store = useMainStore()
 let state = reactive({
-  content: 'console.log("Code Preview")',
-  config: store.config,
+  content: 'console.log("Code Preview")', // 默认展示的内容
+  config: store.config, // 配置信息
+  nowChooseKey: "", // 当前选择看的文件
+  renderArr: [], //所有模板数据
 })
 let timer = ref("")
 const startDo = () => {
@@ -51,7 +66,7 @@ onUnmounted(() => {
 
 const loadConfig = () => {
   // 读取缓存数据初始化到pinia
-  let configData = sessionStorage.getItem("design-config")
+  let configData = localStorage.getItem("design-config")
   let config = configData ? JSON.parse(configData) : {}
   store.saveConfig(config)
 }
@@ -77,6 +92,7 @@ const render = (res, renderKey) => {
     renderKey.split(".").reduce((obj, key) => obj?.[key], res)
   return func(res, renderKey)
 }
+const changeShow = () => {}
 const doParse = async () => {
   let res = await axios.post(state.config.apiCustom)
   let renderArr = []
@@ -87,10 +103,18 @@ const doParse = async () => {
       content: render(res, renderKey),
     })
   })
-  // todo如果有选择的标题,则展示选择的标题
+  state.renderArr = renderArr
   let value = ""
   if (renderArr.length) {
-    value = renderArr.length ? renderArr[0].content : ""
+    // 上次看的界面，要保留，不能变到第一个渲染的代码
+    if (state.nowChooseKey) {
+      let data = renderArr.filter((item) => item.title == state.nowChooseKey)
+      value = data.content
+      state.nowChooseKey = data.title
+    } else {
+      value = renderArr.length ? renderArr[0].content : ""
+      state.nowChooseKey = renderArr[0].title
+    }
   }
   state.content = value
 }
@@ -215,5 +239,23 @@ const doParse = async () => {
 
 .fallbackClass {
   background-color: aquamarine;
+}
+.left-navigator {
+  margin: 0 20px;
+  min-width: 150px;
+  text-align: center;
+  padding: unset;
+  font-size: 18px;
+  .title {
+    padding: 10px;
+  }
+  .title:hover {
+    cursor: pointer;
+    background-color: #51c4d3;
+  }
+}
+
+.left-navigator::-webkit-scrollbar {
+  display: none;
 }
 </style>

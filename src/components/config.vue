@@ -43,7 +43,9 @@
         style="margin-top: 10px">
         <!-- <el-col :span="2" style="margin:auto">组{{ index + 1 }}</el-col> -->
         <el-col :span="8">
-          <el-input v-model="item.key" placeholder="请输入显示标题"></el-input>
+          <el-input
+            v-model="item.title"
+            placeholder="请输入显示标题"></el-input>
         </el-col>
         <el-col :span="8">
           <el-input
@@ -86,8 +88,7 @@ let config = reactive({
   renderRules: [],
 })
 const addRenderName = () => {
-  console.log(config.renderRules, 223)
-  config.renderRules.push({ key: "", value: "" })
+  config.renderRules.push({ title: "", value: "" })
 }
 const removeKey = (index) => {
   config.renderRules.splice(index, 1)
@@ -97,10 +98,10 @@ const doSaveConfig = () => {
   // 存pinia
   store.saveConfig(config)
   // 存localStorage
-  sessionStorage.setItem("design-config", JSON.stringify(config))
+  localStorage.setItem("design-config", JSON.stringify(config))
 }
 const loadConfig = () => {
-  let configData = sessionStorage.getItem("design-config")
+  let configData = localStorage.getItem("design-config")
   if (configData) {
     config = reactive({ ...JSON.parse(configData) })
   } else {
