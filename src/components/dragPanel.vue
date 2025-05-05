@@ -1,6 +1,6 @@
 <template>
   <!-- 抽屉面板 -->
-  <config ref="configPanel" @startDo="startDo"></config>
+  <config ref="configPanel" @startDo="startDo" @doParse="doParse"></config>
   <jsonDrawer ref="jsondrawer" @valueRefresh="doParse"></jsonDrawer>
   <!-- 主布局 -->
   <div class="larry">
@@ -74,6 +74,7 @@ const loadConfig = () => {
 onMounted(() => {
   loadConfig()
   startDo()
+  doParse()
 })
 const lar = inject("http")
 // 显示控制面板
@@ -95,6 +96,7 @@ const render = (res, renderKey) => {
 const changeShow = () => {}
 const doParse = async () => {
   let res = await axios.post(state.config.apiCustom)
+  console.log(res, 1112)
   let renderArr = []
   state.config.renderRules.forEach((item) => {
     let renderKey = item.value
@@ -150,8 +152,8 @@ const doParse = async () => {
   border: 1px solid #51c4d3;
   padding: 12px 0px;
   background-color: #fff;
-  /* overflow-y: scroll; */
   overflow-y: hidden;
+  border-radius: 5px;
 }
 
 /* .group-form {
@@ -171,6 +173,7 @@ const doParse = async () => {
   margin: 20px;
   padding: 20px;
   height: 30vh;
+  border-radius: 5px;
 }
 
 .delete-icon {
@@ -178,14 +181,10 @@ const doParse = async () => {
   /* width: 24px; */
   font-size: 22px;
   padding: 10px;
-  /* background-color: aliceblue; */
   right: 6px;
-  /* right: -39px; */
   top: -16px;
   z-index: 9999;
   border-radius: 50%;
-  /* border: 1px solid #ccc; */
-  /* border: 1px solid red; */
 }
 
 .delete-icon:hover {

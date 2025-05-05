@@ -36,29 +36,32 @@
       <el-row
         ><el-button @click="addRenderName">添加解析规则</el-button>
       </el-row>
-      <el-row
-        v-for="(item, index) in config.renderRules"
-        :key="item.key"
-        :gutter="8"
-        style="margin-top: 10px">
-        <!-- <el-col :span="2" style="margin:auto">组{{ index + 1 }}</el-col> -->
-        <el-col :span="8">
-          <el-input
-            v-model="item.title"
-            placeholder="请输入显示标题"></el-input>
-        </el-col>
-        <el-col :span="8">
-          <el-input
-            v-model="item.value"
-            placeholder="请输入数据路径"></el-input>
-        </el-col>
-        <el-col :span="8">
-          <el-button
-            @click="removeKey"
-            :icon="Delete"
-            type="danger"></el-button>
-        </el-col>
-      </el-row>
+      <div id="list" ref="ruleRef">
+        <el-row
+          v-for="(item, index) in config.renderRules"
+          :key="item.key"
+          :gutter="8"
+          class="item"
+          style="margin-top: 10px">
+          <!-- <el-col :span="2" style="margin:auto">组{{ index + 1 }}</el-col> -->
+          <el-col :span="8">
+            <el-input
+              v-model="item.title"
+              placeholder="请输入显示标题"></el-input>
+          </el-col>
+          <el-col :span="8">
+            <el-input
+              v-model="item.value"
+              placeholder="请输入数据路径"></el-input>
+          </el-col>
+          <el-col :span="8">
+            <el-button
+              @click="removeKey"
+              :icon="Delete"
+              type="danger"></el-button>
+          </el-col>
+        </el-row>
+      </div>
     </template>
     <template #footer>
       <div style="flex: auto">
@@ -73,7 +76,8 @@
 import { ElMessageBox } from "element-plus"
 import { useMainStore } from "@/store"
 import { Delete } from "@element-plus/icons-vue"
-
+import Sortable from "sortablejs"
+import { nextTick } from "vue"
 const store = useMainStore()
 const drawer = ref(false)
 defineExpose({
@@ -93,12 +97,13 @@ const addRenderName = () => {
 const removeKey = (index) => {
   config.renderRules.splice(index, 1)
 }
-
+const ruleRef = ref("")
 const doSaveConfig = () => {
   // 存pinia
   store.saveConfig(config)
   // 存localStorage
   localStorage.setItem("design-config", JSON.stringify(config))
+  emit("doParse")
 }
 const loadConfig = () => {
   let configData = localStorage.getItem("design-config")
@@ -110,8 +115,19 @@ const loadConfig = () => {
 }
 onMounted(() => {
   loadConfig()
+  nextTick(() => {
+    // init()
+  })
 })
-const emit = defineEmits(["startDo"])
+let init = () => {
+  if (config.renderRules && config.renderRules.length > 0) {
+    new Sortable(ruleRef.value, {
+      animation: 150,
+      ghostClass: "blue-background-class",
+    })
+  }
+}
+const emit = defineEmits(["startDo", "doParse"])
 function cancelClick() {
   drawer.value = false
 }
