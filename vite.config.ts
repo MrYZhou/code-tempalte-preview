@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-import viteCompression from 'vite-plugin-compression'
+import { compression } from 'vite-plugin-compression2'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 
@@ -24,18 +24,30 @@ export default defineConfig({
         }
     },
     build: {
-        outDir: './dist'
+        outDir: './dist',
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (id.includes('monaco-editor')) {
+                        return 'monaco';
+                    }
+                }
+            }
+        }
     },
     plugins: [
         vue(),
         // ...
         // gzip压缩 生产环境生成 .gz 文件
-        viteCompression({
-            verbose: true,
-            disable: false,
-            threshold: 10240,
+        compression({
+            //压缩算法，默认gzip
             algorithm: 'gzip',
-            ext: '.gz',
+            //匹配文件
+            include: [/.(js)$/, /.(css)$/,],
+            //压缩超过此大小的文件,以字节为单位
+            threshold: 10240,
+            //删除原始文件
+            deleteOriginalAssets: false
         }),
         AutoImport({
             dts: './src/auto-imports.d.ts',
