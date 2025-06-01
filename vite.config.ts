@@ -25,15 +25,6 @@ export default defineConfig({
     },
     build: {
         outDir: './dist',
-        rollupOptions: {
-            output: {
-                manualChunks(id) {
-                    if (id.includes('monaco-editor')) {
-                        return 'monaco';
-                    }
-                }
-            }
-        }
     },
     plugins: [
         vue(),
